@@ -1,0 +1,16 @@
+FROM jenkins/jenkins
+
+USER root
+
+# Install base packages
+RUN apt-get update && apt-get install -y apt-utils 
+
+USER jenkins
+WORKDIR /var/jenkins_home
+
+# Install plugins
+COPY --chown=jenkins:jenkins ./plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+
+# Copy jenkins configuration file into workdir
+COPY --chown=jenkins:jenkins ./jenkins.yaml /usr/share/jenkins/ref/jenkins.yaml
